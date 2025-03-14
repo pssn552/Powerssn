@@ -1,0 +1,129 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .referral-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #referral-link {
+            word-break: break-all;
+            flex: 1;
+            text-align: left;
+        }
+        .copy-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f9f9f9;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1></h1>
+        
+        <h2>Your Referral Link:</h2>
+        <div class="referral-section">
+            <span id="referral-link">Loading...</span>
+            <button class="copy-btn" onclick="copyReferralLink()">Copy</button>
+        </div>
+
+        <h2> Team: <h2/>
+        <ul id="team-list">Loading...</ul>
+    </div>
+
+    <script>
+  // Get userId from URL or localStorage (for logged-in users)
+const urlParams = new URLSearchParams(window.location.search);
+let userId = urlParams.get('userId') || localStorage.getItem('loggedInUser');
+
+const users = JSON.parse(localStorage.getItem('users')) || [];
+
+// Update referral link
+const referralLink = userId
+    ? `${window.location.origin}/index.html?referralId=${userId}`
+    : 'No referral link available';
+document.getElementById('referral-link').textContent = referralLink;
+
+// Display team members
+const team = users.filter(user => user.referrer === userId);
+const teamList = document.getElementById('team-list');
+teamList.innerHTML = '';
+
+if (team.length > 0) {
+    team.forEach(member => {
+        const li = document.createElement('li');
+        li.textContent = `Name: ${member.name} | User ID: ${member.userId}`;
+        teamList.appendChild(li);
+    });
+} else {
+    teamList.innerHTML = '<li>No team members yet.</li>';
+}
+   
+ // Highlight the copy button if coming from heera.html
+window.addEventListener('load', () => {
+    if (localStorage.getItem('highlightCopyButton') === 'true') {
+        document.querySelector('.copy-btn').style.background = '#ff9800';
+        localStorage.removeItem('highlightCopyButton'); // Reset the flag
+    }
+});
+
+// Copy referral link to clipboard
+function copyReferralLink() {
+    const link = document.getElementById('referral-link').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+        alert('Referral link copied!');
+    });
+}
+   
+            </script>
+</body>
+</html>

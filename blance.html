@@ -1,0 +1,108 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Balance Page</title>
+    <style>
+        body {
+            background-color: aqua;
+            text-align: center;
+            padding: 20px;
+        }
+        h2 {
+            font-size: 30px;
+            color: #666666;
+        }
+        p {
+            font-size: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: teal;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005f5f;
+        }
+        #pendingMessage {
+            color: red;
+            font-weight: bold;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: teal;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Balance</h2>
+    <p> <span id="balance">00.00</span></p>
+
+    <div id="withdrawalSection">
+        <form id="withdrawalForm">
+            <label for="accountNo">Account No:</label>
+            <input type="text" id="accountNo" required><br>
+
+            <label for="holderName">Account Title:</label>
+            <input type="text" id="holderName" required><br>
+
+            <button type="submit">Withdrawal Now</button>
+        </form>
+    </div>
+
+    <p id="pendingMessage" style="display: none;">Your withdrawal request is pending. Please wait for admin approval.</p>
+
+    <a href="home.html">Back</a>
+
+    <script>
+        const withdrawalRequest = JSON.parse(localStorage.getItem('withdrawalRequest'));
+
+        if (withdrawalRequest && withdrawalRequest.status === 'Pending') {
+            document.getElementById('withdrawalSection').style.display = 'none';
+            document.getElementById('pendingMessage').style.display = 'block';
+        } else if (withdrawalRequest && withdrawalRequest.status === 'Approved') {
+            localStorage.removeItem('withdrawalRequest'); // Reset after approval
+            alert('Your withdrawal request has been approved!');
+            window.location.reload(); // Refresh to show the form again
+        }
+
+        document.getElementById('withdrawalForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const accountNo = document.getElementById('accountNo').value;
+            const holderName = document.getElementById('holderName').value;
+            const balance = document.getElementById('balance').innerText;
+
+            const withdrawalRequest = {
+                accountNo,
+                holderName,
+                amount: balance,
+                status: 'Pending'
+            };
+
+            localStorage.setItem('withdrawalRequest', JSON.stringify(withdrawalRequest));
+            window.location.reload();
+        });
+// Get balance from localStorage and set it with "Rs" prefix
+const balance = localStorage.getItem('balance');
+document.getElementById('balance').textContent = balance ? `Rs: ${balance}` : 'Rs: 00.00'
+    </script>
+</body>
+</html>
+

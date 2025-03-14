@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 { font-size: 24px; margin-bottom: 20px; }
+        label { display: block; text-align: left; margin-bottom: 8px; font-weight: bold; }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .hidden { display: none; }
+        #accessButton {
+            background-color: green;
+            color: white;
+            display: none;
+        }
+        #statusMessage { font-size: 18px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Withdrawal Request</h1>
+
+        <form id="buyForm" onsubmit="submitRequest(); return false;">
+            <label for="trx-id">Transaction ID (Trx ID)</label>
+            <input type="text" id="trx-id" required>
+
+            <label for="image-upload">Upload Proof of Payment</label>
+            <input type="file" id="image-upload" accept="image/*" required>
+
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+
+        <p id="statusMessage"></p>
+        <button id="accessButton" onclick="window.location.href='heera.html'">Access Heera Page</button>
+    </div>
+
+<script>
+    // Form submission logic
+    function submitRequest() {
+        const trxId = document.getElementById('trx-id').value;
+        const image = document.getElementById('image-upload').files[0];
+
+        if (trxId && image) {
+            localStorage.setItem('buyRequest', JSON.stringify({
+                status: 'pending',
+                trxId: trxId
+            }));
+
+            document.getElementById('statusMessage').textContent = "Verification processing...";
+            document.getElementById('submitButton').disabled = true;
+        }
+    }
+
+    // Check if request is approved
+    document.addEventListener('DOMContentLoaded', function() {
+        const request = JSON.parse(localStorage.getItem('buyRequest'));
+        if (request?.status === 'approved') {
+            document.getElementById('buyForm').classList.add('hidden');
+            document.getElementById('statusMessage').textContent = "Approved! You can now access the Heera page.";
+            document.getElementById('accessButton').style.display = 'block';
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Approval</title>
+</head>
+<body>
+
+    <h1>Approve User Request</h1>
+
+    <div id="orderDetails">
+        <p><strong>Transaction ID:</strong> <span id="trxId">Loading...</span></p>
+    </div>
+
+    <button onclick="approveRequest()">Approve Heera Access</button>
+
+<script>
+    // Load pending request
+    const request = JSON.parse(localStorage.getItem('buyRequest'));
+    if (request) {
+        document.getElementById('trxId').textContent = request.trxId || 'N/A';
+    }
+
+    // Approve request
+    function approveRequest() {
+        if (request) {
+            request.status = 'approved';
+            localStorage.setItem('buyRequest', JSON.stringify(request));
+            alert('Request approved! The user can now access Heera.');
+        }
+    }
+</script>
+
+</body>
+</html>
+
